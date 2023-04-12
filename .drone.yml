@@ -1,0 +1,20 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+  - name: pypi_publish
+    image: plugins/pypi
+    settings:
+      username: __token__
+      password:
+        from_secret: pypi-token
+
+trigger:
+  event:
+    - tag
