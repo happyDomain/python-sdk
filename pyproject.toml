@@ -1,0 +1,28 @@
+[project]
+name = "happydomain"
+version = "0.0.1"
+authors = [
+  { name="happyDomain's team", email="contact+pypi@happydomain.org" },
+]
+description = "Finally a simple interface for domain names."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: CEA CNRS Inria Logiciel Libre License, version 2.1 (CeCILL-2.1)",
+    "Operating System :: POSIX",
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Topic :: Internet :: Name Service (DNS)",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Operating System :: POSIX",
+]
+
+[project.urls]
+"Homepage" = "https://git.happydomain.org/python-sdk"
+"Bug Tracker" = "https://git.happydomain.org/python-sdk/issues"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
