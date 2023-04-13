@@ -74,6 +74,16 @@ class HappyDomain:
 
         return ret
 
+    def provider_get(self, id):
+        r = self.session.get(
+            self.baseurl + "/api/providers/" + quote_plus(id),
+        )
+
+        if r.status_code != 200:
+            raise HappyError(r.status_code, **r.json())
+
+        return Provider(self, **r.json())
+
     def provider_add(self, type, name, data):
         r = self.session.post(
             self.baseurl + "/api/providers",
