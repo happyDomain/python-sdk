@@ -39,7 +39,7 @@ class Admin:
         u = AuthUser(self, **r.json())
 
         u.Password = u.ResetPassword(password)
-        return
+        return u
 
     def authuser_delete(self, Id):
         r = self.session.delete("http+unix://" + self.socket_path + "/api/auth/" + quote_plus(Id))
