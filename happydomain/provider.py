@@ -6,14 +6,14 @@ from .domain import Domain
 
 class Provider:
 
-    def __init__(self, _session, _srctype, _id, _ownerid, _comment, **kwargs):
+    def __init__(self, _session, _srctype, _id, _ownerid, _comment, Provider={}):
         self._session = _session
 
         self._srctype = _srctype
         self._id = _id
         self._ownerid = _ownerid
         self._comment = _comment
-        self.args = kwargs
+        self.args = Provider
 
     def _dumps(self):
         return json.dumps({
