@@ -65,20 +65,6 @@ class Admin:
 
         return ret
 
-    def authuser_reset_password(self, Id, NewPassword):
-        r = self.session.post(
-            "http+unix://" + self.socket_path + "/api/auth/" + quote_plus(Id) + "/reset_password",
-            data=json.dumps({
-                "password": NewPassword,
-            })
-        )
-
-        if r.status_code != 200:
-            raise HappyError(r.status_code, **r.json())
-
-        from .authuser import AuthUser
-        return r.json()
-
     def authuser_udpate(self, Id, au):
         r = self.session.put(
             "http+unix://" + self.socket_path + "/api/auth/" + quote_plus(Id),

@@ -14,8 +14,18 @@ class AuthUser:
     def Delete(self):
         self._session.authuser_delete(self.Id)
 
-    def ResetPassword(self, *args, **kwargs):
-        self._session.authuser_reset_password(self.Id, *args, **kwargs)
+    def ResetPassword(self, Id, NewPassword):
+        r = self.session.post(
+            "http+unix://" + self.socket_path + "/api/auth/" + quote_plus(Id) + "/reset_password",
+            data=json.dumps({
+                "password": NewPassword,
+            })
+        )
+
+        if r.status_code != 200 and r.status_code != 406:
+            raise HappyError(r.status_code, **r.json())
+
+        return r.status_code == 200
 
     def Update(self):
         self._session.authuser_update(self.Id, self)
