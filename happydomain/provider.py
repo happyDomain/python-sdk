@@ -1,4 +1,5 @@
 import json
+from urllib.parse import quote
 
 from .error import HappyError
 from .domain import Domain
@@ -15,14 +16,13 @@ class Provider:
         self.args = kwargs
 
     def _dumps(self):
-        d = {
+        return json.dumps({
             "_srctype": self._srctype,
             "_id": self._id,
             "_ownerid": self._ownerid,
             "_comment": self._comment,
-        }
-        d.update(self.kwargs)
-        return json.dumps(d)
+            "Provider": self.args,
+        })
 
     def domain_add(self, dn):
         r = self._session.session.post(
@@ -36,11 +36,11 @@ class Provider:
         if r.status_code != 200:
             raise HappyError(r.status_code, **r.json())
 
-        return Domain(self, **r.json())
+        return Domain(self._session, **r.json())
 
     def delete(self):
         r = self._session.session.delete(
-            self.baseurl + "/api/providers/" + quote(self._id),
+            self._session.baseurl + "/api/providers/" + quote(self._id),
         )
 
         if r.status_code > 300:
@@ -50,8 +50,8 @@ class Provider:
 
     def update(self):
         r = self._session.session.put(
-            self.baseurl + "/api/providers/" + quote(self._id),
-            date=self._dumps(),
+            self._session.baseurl + "/api/providers/" + quote(self._id),
+            data=self._dumps(),
         )
 
         if r.status_code > 300:

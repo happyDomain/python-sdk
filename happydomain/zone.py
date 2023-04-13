@@ -33,23 +33,20 @@ class ZoneMeta:
 
 class Zone(ZoneMeta):
 
-    def __init__(self, _session, _domainid, services, **kwargs):
+    def __init__(self, _session, _domainid, **kwargs):
+        self._domainid = _domainid
+
         super(Zone, self).__init__(_session, **kwargs)
 
-        self._domainid = _domainid
-        self._load(services)
-
-
     def _load(self, services, **kwargs):
-        if "id" in kwargs:
-            super(Zone, self).__init__(**kwargs)
+        super(Zone, self)._load(**kwargs)
 
         self.services = {}
         if services is not None:
             for k in services:
                 self.services[k] = []
                 for s in services[k]:
-                    self.services[k].append(HService(_session, self._domainid, self.id, **s))
+                    self.services[k].append(HService(self._session, self._domainid, self.id, **s))
 
     def _svc_dumps(self):
         services = {}
@@ -62,9 +59,7 @@ class Zone(ZoneMeta):
         return services
 
     def _dumps(self):
-        return json.dumps({
-            "id": self.id,
-            "id_author": self.id_author,
+        d = json.dumps({
             "default_ttl": self.default_ttl,
             "last_modified": self.last_modified,
             "commit_message": self.commit_message,
@@ -72,6 +67,11 @@ class Zone(ZoneMeta):
             "published": self.published,
             "services": self._svc_dumps(),
         })
+        if self.id is not None:
+            d["id"] = self.id
+        if self.id_author is not None:
+            d["id_author"] = self.id_author
+        return d
 
     def add_zone_service(self, subdomain, svctype, svc):
         r = self._session.session.post(
@@ -97,11 +97,19 @@ class Zone(ZoneMeta):
         return r.json()
 
     def apply_changes(self):
+        rdiff = self._session.session.post(
+            self._session.baseurl + "/api/domains/" + quote(self._domainid) + "/diff_zones/%40/" + quote(self.id),
+        )
+
+        if rdiff.status_code > 300:
+            raise HappyError(rdiff.status_code, **rdiff.json())
+
         r = self._session.session.post(
             self._session.baseurl + "/api/domains/" + quote(self._domainid) + "/zone/" + quote(self.id) + "/apply_changes",
+            data=rdiff.text
         )
 
         if r.status_code > 300:
             raise HappyError(r.status_code, **r.json())
 
-        return r.json()
+        return ZoneMeta(self._session, **r.json())

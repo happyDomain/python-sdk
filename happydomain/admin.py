@@ -65,7 +65,7 @@ class Admin:
 
         return ret
 
-    def authuser_udpate(self, Id, au):
+    def authuser_update(self, Id, au):
         r = self.session.put(
             "http+unix://" + self.socket_path + "/api/auth/" + quote_plus(Id),
             data=json.dumps({

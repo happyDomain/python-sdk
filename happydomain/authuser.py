@@ -1,3 +1,6 @@
+import json
+from urllib.parse import quote
+
 class AuthUser:
 
     def __init__(self, _session, Id, Email, EmailVerification, Password, CreatedAt, LastLoggedIn, AllowCommercials):
@@ -14,9 +17,9 @@ class AuthUser:
     def Delete(self):
         self._session.authuser_delete(self.Id)
 
-    def ResetPassword(self, Id, NewPassword):
-        r = self.session.post(
-            "http+unix://" + self.socket_path + "/api/auth/" + quote_plus(Id) + "/reset_password",
+    def ResetPassword(self, NewPassword):
+        r = self._session.session.post(
+            "http+unix://" + self._session.socket_path + "/api/auth/" + quote(self.Id) + "/reset_password",
             data=json.dumps({
                 "password": NewPassword,
             })
