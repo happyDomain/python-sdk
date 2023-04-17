@@ -1,6 +1,8 @@
 import json
 from urllib.parse import quote
 
+from .api import HappyError
+
 class AuthUser:
 
     def __init__(self, _session, Id, Email, EmailVerification, Password, CreatedAt, LastLoggedIn, AllowCommercials):
