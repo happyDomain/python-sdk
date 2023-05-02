@@ -51,7 +51,7 @@ class HappyDomain:
 
         if val is not None:
             for au in val:
-                ret.append(Domain(self, **au))
+                ret.append(Domain(self, zone_history_are_ids=True, **au))
 
         return ret
 

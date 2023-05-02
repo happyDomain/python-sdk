@@ -2,11 +2,11 @@ import json
 from urllib.parse import quote
 
 from .error import HappyError
-from .zone import ZoneMeta, Zone
+from .zone import UncompleteZoneMeta, ZoneMeta, Zone
 
 class Domain:
 
-    def __init__(self, _session, id, id_owner, id_provider, domain, zone_history, group=""):
+    def __init__(self, _session, id, id_owner, id_provider, domain, zone_history, zone_history_are_ids=False, group=""):
         self._session = _session
 
         self.id = id
@@ -14,7 +14,10 @@ class Domain:
         self.id_provider = id_provider
         self.domain = domain
         self.group = group
-        self.zone_history = zone_history if zone_history is not None else []
+        if zone_history_are_ids:
+            self.zone_history = [UncompleteZoneMeta(self, zid) for zid in zone_history]
+        else:
+            self.zone_history = zone_history if zone_history is not None else []
 
     def _dumps(self):
         return json.dumps({

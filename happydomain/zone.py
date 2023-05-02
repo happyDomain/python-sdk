@@ -31,6 +31,54 @@ class ZoneMeta:
         })
 
 
+class UncompleteZoneMeta(ZoneMeta):
+
+    def __init__(self, _domain, id):
+        self._complete = None
+        self._domain = _domain
+        self.id = id
+
+    def resolve(self):
+        if self._complete is None:
+            self._complete = self._domain.get_zone(self.id)
+
+    @property
+    def id_author(self):
+        self.resolve()
+        return self._complete.id_author
+
+    @property
+    def default_ttl(self):
+        self.resolve()
+        return self._complete.default_ttl
+
+    @property
+    def last_modified(self):
+        self.resolve()
+        return self._complete.last_modified
+
+    @property
+    def last_modified(self):
+        self.resolve()
+        return self._complete.last_modified
+
+    @property
+    def commit_message(self):
+        self.resolve()
+        return self._complete.commit_message
+
+    @property
+    def commit_date(self):
+        self.resolve()
+        return self._complete.commit_date
+
+    @property
+    def published(self):
+        self.resolve()
+        return self._complete.published
+
+
+
 class Zone(ZoneMeta):
 
     def __init__(self, _session, _domainid, **kwargs):
